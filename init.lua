@@ -172,3 +172,75 @@ regnew_node('color_blocks:blue',
 	})
 --ALIAS
 regnew_alias('cb:blue', 'color_blocks:blue')
+
+--PINK BLOCK
+------------
+--DEFINITION
+regnew_node('color_blocks:pink',
+	{
+    tiles = { 'pink.png' },
+	drawtype = 'glasslike',
+	use_texture_alpha = 'blend',
+	post_effect_color = '#ff00dca6',
+	paramtype = 'light',
+    description = 'Floats',
+    groups = { cb_gas = 1, oddly_breakable_by_hand = 3 },
+	sunlight_propagates = true,
+	walkable = false,
+	pointable = false,
+	})
+--ALIAS
+regnew_alias('cb:pink', 'color_blocks:pink')
+--ABM
+regnew_abm(
+	{
+	nodenames = {'cb:pink'},
+	interval = 1,
+	chance = 3,
+	action = function(pos, node)
+        local dir = directions[5]
+		local next_posup = vector.add(pos, dir)
+		local next_nodeup = minetest.get_node(next_posup)
+		local randir = directions[math.random(1,4)]
+		local next_pos = vector.add(pos, randir)
+		local next_node = minetest.get_node(next_pos)
+		local iscb = minetest.get_item_group
+		if pos.y > 24 then
+			minetest.set_node(pos, {name = 'air'})
+		elseif next_nodeup.name == 'air' then
+			minetest.swap_node(next_posup, node)
+			minetest.swap_node(pos, next_nodeup)
+		elseif next_node.name == 'air' then
+			minetest.swap_node(next_pos, node)
+			minetest.swap_node(pos, next_node)
+			end
+		end
+	})
+
+--PINK GENERATOR
+------------
+--DEFINITION
+regnew_node('color_blocks:pinkgen', 
+	{
+    description = 'gasss',
+    tiles = { 'pinkgen.png' },
+	light_source = 3,
+    groups = { cb = 1, oddly_breakable_by_hand = 3 }
+	})
+--ALIAS
+regnew_alias('cb:pinkgen', 'color_blocks:pinkgen')
+--ABM
+regnew_abm(
+	{
+	nodenames = {'cb:pinkgen'},
+	interval = 5,
+	chance = 2,
+	action = function(pos, node)
+        local dir = directions[5]
+		local next_posup = vector.add(pos, dir)
+		local next_nodeup = minetest.get_node(next_posup)
+		if next_nodeup.name == 'air' then
+			minetest.set_node(next_posup, {name = 'cb:pink'})
+			end
+		end
+	})
